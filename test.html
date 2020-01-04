@@ -7,14 +7,14 @@ context = canvas.getContext('2d'),imageData;
 
 let image=new Image();
 image.crossOrigin="Anonymous";
-image.src="https://i.imgur.com/RWRKhi7.png";
+image.src="https://i.imgur.com/nOh40PS.png";
 image.onload=function(){
 	context.drawImage(image,0,0,400,400);
     
     
     
     //let imageData = context.getImageData(240, 240, 50, 50);
-    let imageData = context.getImageData(250, 250, 50, 50);
+    let imageData = context.getImageData(0, 50, 50, 50);
     //context.clearRect(0, 0, 400, 400);
 	//context.putImageData(imageData,0,0);
     //console.log(imageData.data.length);
@@ -36,6 +36,8 @@ image.onload=function(){
         }
        
     }
+    console.log(yArr);
+    console.log(xArr);
    console.log(linearRegression(yArr,xArr));
     //context.putImageData(imageData,0,0);
     
@@ -53,12 +55,21 @@ function subgridDivision(subgridWidth,subgridHeight,canvasElement){
     xArr=[],yArr=[],
     currentX=-1,currentY=0,
     results=[];
+    console.log(noSubgridY);
     
-
+    //make outline black color
+    context.fillStyle = "#000000";
+	context.fillRect(0, 0, canvasElement.width, 1);
+	context.fillRect(0, 0, 1, canvasElement.height);
+    context.fillRect(canvasElement.width-1, 0, 1, canvasElement.height);
+    context.fillRect(0, canvasElement.height-1, canvasElement.width, 1);
+    
     for(let y=0;y<noSubgridY;y++){
     	for(let x=0;x<noSubgridX;x++){
         	imageData = context.getImageData(x*subgridWidth, y*subgridHeight, subgridWidth, subgridHeight);
             console.log(imageData.data.length);
+            //context.fillStyle = "#FF0000";
+		//context.fillRect(x*subgridWidth, y*subgridHeight, 50, 50);
             xArr=[];
             yArr=[];
             for(let i=0;i<imageData.data.length;i+=4){
@@ -85,18 +96,17 @@ function subgridDivision(subgridWidth,subgridHeight,canvasElement){
           
         }
     }
-    
+console.log(results);
     let rr=results.reduce(function(r,value){
     	if(value.r2>0.5)
         r.push(value);
-        
         return r;
     },[]);
     
    console.log(rr);
    rr.forEach(function(elem){
    		context.fillStyle = "#FF0000";
-context.fillRect(elem.startXPos, elem.startYPos, 50, 50);
+		context.fillRect(elem.startXPos, elem.startYPos, 40, 40);
    });
    
     
@@ -131,19 +141,14 @@ function linearRegression(y,x){
         }
         lr.intercept = (sum_y - lr.slope * sum_x)/n;
         lr.r2 = Math.pow((n*sum_xy - sum_x*sum_y)/Math.sqrt((n*sum_xx-sum_x*sum_x)*(n*sum_yy-sum_y*sum_y)),2);
-		
+        
+		if(!lr.r2 && lr.intercept)lr.r2=0.9;
+        
         let temp_x=5,temp_y=lr.slope*5;
         lr.angle=Math.atan2(temp_y, temp_x) * 180 / Math.PI;
 		
         
         return lr;
 }
-
- let known_y = [1,5,4,19,3],
-known_x = [1,5,4,19,3];
-
-var lr = linearRegression(known_y, known_x);
-
-//console.log(lr);
 
 </script>
