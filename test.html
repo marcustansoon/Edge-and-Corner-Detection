@@ -94,14 +94,14 @@ function subgridDivision(subgridWidth,subgridHeight,canvasElement){
           
         }
     }
-
+console.log(results);
     let rr=results.reduce(function(r,value){
     	if(value.r2>0.4)//filter out low r2 values
         r.push(value);
         return r;
     },[]);
     
-   console.log(rr);
+   //console.log(rr);
    
    let groupX=[],//[{slope...,members:[...]},{...}]
    isPushed=false;
@@ -130,6 +130,8 @@ function subgridDivision(subgridWidth,subgridHeight,canvasElement){
         }
    }
    
+   
+   
    //context.fillStyle = "#FF0000";
    groupX.forEach(function(elem){
    		
@@ -142,7 +144,7 @@ function subgridDivision(subgridWidth,subgridHeight,canvasElement){
 
 
 
-function linearRegression(y,x){
+function linearRegression(y,x,isCalledBefore){
         var lr = {};
         var n = y.length;
         var sum_x = 0;
@@ -161,11 +163,14 @@ function linearRegression(y,x){
 
         lr.slope = (n * sum_xy - sum_x * sum_y) / (n*sum_xx - sum_x * sum_x);
         if(isNaN(lr.slope)){
-        	lr.r2=0;
-            lr.intercept=0;
-            lr.slope=0;
-            lr.angle=0;
-        	return lr;
+        	if(!y.length || isCalledBefore){
+              lr.r2=0;
+              lr.intercept=0;
+              lr.slope=0;
+              lr.angle=0;
+              return lr;
+            }
+              return linearRegression(x,y,true);
         }
         lr.intercept = (sum_y - lr.slope * sum_x)/n;
         lr.r2 = Math.pow((n*sum_xy - sum_x*sum_y)/Math.sqrt((n*sum_xx-sum_x*sum_x)*(n*sum_yy-sum_y*sum_y)),2);
@@ -178,5 +183,6 @@ function linearRegression(y,x){
         
         return lr;
 }
+
 
 </script>
