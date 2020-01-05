@@ -7,7 +7,7 @@ context = canvas.getContext('2d'),imageData;
 
 let image=new Image();
 image.crossOrigin="Anonymous";
-image.src="https://i.imgur.com/oXPHV3K.png";
+image.src="https://i.imgur.com/gmd0FmZ.png";
 image.onload=function(){
 	context.drawImage(image,0,0,400,400);
     
@@ -65,7 +65,7 @@ function subgridDivision(subgridWidth,subgridHeight,canvasElement){
     for(let y=0;y<noSubgridY;y++){
     	for(let x=0;x<noSubgridX;x++){
         	imageData = context.getImageData(x*subgridWidth, y*subgridHeight, subgridWidth, subgridHeight);
-            console.log(imageData.data.length);
+            //console.log(imageData.data.length);
             //context.fillStyle = "#FF0000";
 		//context.fillRect(x*subgridWidth, y*subgridHeight, 50, 50);
             xArr=[];
@@ -105,15 +105,11 @@ function subgridDivision(subgridWidth,subgridHeight,canvasElement){
    
    let groupX=[],//[{slope...,members:[...]},{...}]
    isPushed=false;
-   
-   //console.log(rr[25].intercept-rr[26].intercept);
-   //return;
-   
+
    for(let i=0;i<rr.length;i++){
    		isPushed=false;
    		for(let a=0;a<groupX.length;a++){
         	if(Math.abs(groupX[a].angle-rr[i].angle)<10){
-            	//console.log('asd');
                 isPushed=true;
                 groupX[a].members.push(rr[i]);
                 break;
@@ -176,8 +172,9 @@ function linearRegression(y,x){
         
 		if(!lr.r2 && lr.intercept)lr.r2=0.75;
         
-        let temp_x=5,temp_y=lr.slope*5;
-        lr.angle=Math.atan2(temp_y, temp_x) * 180 / Math.PI;
+        //let temp_x=5,temp_y=lr.slope*5;
+        lr.angle=Math.atan2(lr.slope,1)* 180 / Math.PI;//Math.atan2(temp_y, temp_x) * 180 / Math.PI;
+        
         
         return lr;
 }
