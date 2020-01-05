@@ -41,7 +41,7 @@ image.onload=function(){
     //context.putImageData(imageData,0,0);
     
    
-    subgridDivision(40,40,canvas);
+    subgridDivision(10,10,canvas);
 }
 
 
@@ -106,13 +106,14 @@ function subgridDivision(subgridWidth,subgridHeight,canvasElement){
    let groupX=[],//[{slope...,members:[...]},{...}]
    isPushed=false;
    
+   //console.log(rr[25].intercept-rr[26].intercept);
+   //return;
+   
    for(let i=0;i<rr.length;i++){
-   	
+   		isPushed=false;
    		for(let a=0;a<groupX.length;a++){
-
-            console.log(Math.abs((rr[i].intercept-groupX[a].intercept-5*groupX[a].slope)/-5-groupX[a].slope));
-        	if(Math.abs(groupX[a].slope-rr[i].slope)<0.15 /*&& Math.abs((rr[i].intercept-groupX[a].intercept)/-5-groupX[a].slope)<0.15*/){
-            	console.log('asd');
+        	if(Math.abs(groupX[a].angle-rr[i].angle)<10){
+            	//console.log('asd');
                 isPushed=true;
                 groupX[a].members.push(rr[i]);
                 break;
@@ -125,9 +126,18 @@ function subgridDivision(subgridWidth,subgridHeight,canvasElement){
    }
    console.log(groupX);
    
-   rr.forEach(function(elem){
-   		context.fillStyle = "#FF0000";
-		context.fillRect(elem.startXPos, elem.startYPos, subgridWidth, subgridHeight);
+   
+   for(let i=0;i<groupX.length;i++){
+   		context.fillStyle ='#'+(Math.random()*0xFFFFFF<<0).toString(16);
+   		for(let j=0;j<groupX[i].members.length;j++){
+        context.fillRect(groupX[i].members[j].startXPos, groupX[i].members[j].startYPos, subgridWidth, subgridHeight);
+        }
+   }
+   
+   //context.fillStyle = "#FF0000";
+   groupX.forEach(function(elem){
+   		
+		//context.fillRect(elem.startXPos, elem.startYPos, subgridWidth, subgridHeight);
    });
    
    
