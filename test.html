@@ -123,11 +123,12 @@ console.log(results);
    console.log(groupX);
    
    
-   for(let i=0;i<groupX.length;i++){
+   for(let i=0;i<groupX.length;i+=1){
    		context.fillStyle ='#'+(Math.random()*0xFFFFFF<<0).toString(16);
    		for(let j=0;j<groupX[i].members.length;j++){
         context.fillRect(groupX[i].members[j].startXPos, groupX[i].members[j].startYPos, subgridWidth, subgridHeight);
         }
+        console.log(groupX[i]);
    }
    
    
@@ -170,7 +171,15 @@ function linearRegression(y,x,isCalledBefore){
               lr.angle=0;
               return lr;
             }
-              return linearRegression(x,y,true);
+            	//console.log(y,x);
+              let temp = linearRegression(x,y,true);
+              if(!temp.slope){
+              	temp.angle=90-temp.angle;
+                temp.slope=0;
+                temp.isVerticalLine=true;
+              }
+              return temp;
+              
         }
         lr.intercept = (sum_y - lr.slope * sum_x)/n;
         lr.r2 = Math.pow((n*sum_xy - sum_x*sum_y)/Math.sqrt((n*sum_xx-sum_x*sum_x)*(n*sum_yy-sum_y*sum_y)),2);
@@ -183,6 +192,5 @@ function linearRegression(y,x,isCalledBefore){
         
         return lr;
 }
-
 
 </script>
