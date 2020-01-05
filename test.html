@@ -7,7 +7,7 @@ context = canvas.getContext('2d'),imageData;
 
 let image=new Image();
 image.crossOrigin="Anonymous";
-image.src="https://i.imgur.com/RWRKhi7.png";
+image.src="https://i.imgur.com/oXPHV3K.png";
 image.onload=function(){
 	context.drawImage(image,0,0,400,400);
     
@@ -41,7 +41,7 @@ image.onload=function(){
     //context.putImageData(imageData,0,0);
     
    
-    subgridDivision(50,50,canvas);
+    subgridDivision(40,40,canvas);
 }
 
 
@@ -54,7 +54,6 @@ function subgridDivision(subgridWidth,subgridHeight,canvasElement){
     xArr=[],yArr=[],
     currentX=-1,currentY=0,
     results=[];
-    console.log(noSubgridY);
     
     //make outline black color
     context.fillStyle = "#000000";
@@ -95,20 +94,44 @@ function subgridDivision(subgridWidth,subgridHeight,canvasElement){
           
         }
     }
-console.log(results);
+
     let rr=results.reduce(function(r,value){
-    	if(value.r2>0.5)
+    	if(value.r2>0.4)//filter out low r2 values
         r.push(value);
         return r;
     },[]);
     
    console.log(rr);
+   
+   let groupX=[],//[{slope...,members:[...]},{...}]
+   isPushed=false;
+   
+   for(let i=0;i<rr.length;i++){
+   	
+   		for(let a=0;a<groupX.length;a++){
+
+            console.log(Math.abs((rr[i].intercept-groupX[a].intercept-5*groupX[a].slope)/-5-groupX[a].slope));
+        	if(Math.abs(groupX[a].slope-rr[i].slope)<0.15 /*&& Math.abs((rr[i].intercept-groupX[a].intercept)/-5-groupX[a].slope)<0.15*/){
+            	console.log('asd');
+                isPushed=true;
+                groupX[a].members.push(rr[i]);
+                break;
+            }
+        }
+        if(!isPushed){
+        	groupX.push(rr[i]);
+            groupX[groupX.length-1].members=[rr[i]];
+        }
+   }
+   console.log(groupX);
+   
    rr.forEach(function(elem){
    		context.fillStyle = "#FF0000";
-		context.fillRect(elem.startXPos, elem.startYPos, 50, 50);
+		context.fillRect(elem.startXPos, elem.startYPos, subgridWidth, subgridHeight);
    });
    
-    
+   
+   
 }
 
 
@@ -145,7 +168,6 @@ function linearRegression(y,x){
         
         let temp_x=5,temp_y=lr.slope*5;
         lr.angle=Math.atan2(temp_y, temp_x) * 180 / Math.PI;
-		
         
         return lr;
 }
