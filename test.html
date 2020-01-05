@@ -128,7 +128,7 @@ console.log(results);
    		for(let j=0;j<groupX[i].members.length;j++){
         context.fillRect(groupX[i].members[j].startXPos, groupX[i].members[j].startYPos, subgridWidth, subgridHeight);
         }
-        console.log(groupX[i]);
+        //console.log(groupX[i]);
    }
    
    
@@ -171,7 +171,6 @@ function linearRegression(y,x,isCalledBefore){
               lr.angle=0;
               return lr;
             }
-            	//console.log(y,x);
               let temp = linearRegression(x,y,true);
               if(!temp.slope){
               	temp.angle=90-temp.angle;
