@@ -7,7 +7,7 @@ context = canvas.getContext('2d'),imageData;
 
 let image=new Image();
 image.crossOrigin="Anonymous";
-image.src="https://i.imgur.com/gmd0FmZ.png";
+image.src="https://i.imgur.com/KYDlIpi.png";
 image.onload=function(){
 	context.drawImage(image,0,0,500,500);
     
@@ -45,7 +45,7 @@ image.onload=function(){
     
     
    
-    subgridDivision(20,20,canvas);
+    subgridDivision(10,10,canvas);
     context.fillStyle ='#'+(Math.random()*0xFFFFFF<<0).toString(16);
    context.fillRect(440,220,25,25);
 }
@@ -123,7 +123,7 @@ function subgridDivision(subgridWidth,subgridHeight,canvasElement){
    for(let i=0;i<rr.length;i++){
    		isPushed=false;
    		for(let a=0;a<groupX.length;a++){
-        	if(Math.abs(groupX[a].angle-rr[i].angle)<10){
+        	if(Math.abs(groupX[a].angle-rr[i].angle)<6){
                 isPushed=true;
                 groupX[a].members.push(rr[i]);
                 break;
