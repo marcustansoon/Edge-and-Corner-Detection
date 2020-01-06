@@ -1,5 +1,5 @@
 
-<canvas id="canvas" width="400" height="400"></canvas>
+<canvas id="canvas" width="500" height="500"></canvas>
 <script>
 
 let canvas = document.getElementById('canvas'),
@@ -9,7 +9,7 @@ let image=new Image();
 image.crossOrigin="Anonymous";
 image.src="https://i.imgur.com/gmd0FmZ.png";
 image.onload=function(){
-	context.drawImage(image,0,0,400,400);
+	context.drawImage(image,0,0,500,500);
     
     
     
@@ -37,11 +37,17 @@ image.onload=function(){
        
     }
   
-   //console.log(linearRegression(yArr,xArr));
-    //context.putImageData(imageData,0,0);
+   /*console.log(linearRegression(
+   [3, 4, 5, 3, 4, 5, 3, 4, 5, 3, 4, 5, 3, 4, 5, 3, 4, 5, 3, 4, 5, 3, 4, 5, 3, 4, 5, 3, 4, 5, 3, 4, 5, 3, 4, 5, 3, 4, 5, 3, 4, 5, 3, 4, 5, 3, 4, 5, 3, 4, 5, 3, 4, 5, 3, 4, 5, 3, 4, 5],
+   [19, 19, 19, 18, 18, 18, 17, 17, 17, 16, 16, 16, 15, 15, 15, 14, 14, 14, 13, 13, 13, 12, 12, 12, 11, 11, 11, 10, 10, 10, 9, 9, 9, 8, 8, 8, 7, 7, 7, 6, 6, 6, 5, 5, 5, 4, 4, 4, 3, 3, 3, 2, 2, 2, 1, 1, 1, 0, 0, 0]));*/
+   //console.log('asd');
+    //context.putImageData(imageData,80,20,20,20);
+    
     
    
-    subgridDivision(10,10,canvas);
+    subgridDivision(20,20,canvas);
+    context.fillStyle ='#'+(Math.random()*0xFFFFFF<<0).toString(16);
+   context.fillRect(440,220,25,25);
 }
 
 
@@ -57,10 +63,10 @@ function subgridDivision(subgridWidth,subgridHeight,canvasElement){
     
     //make outline black color
     context.fillStyle = "#000000";
-	context.fillRect(0, 0, canvasElement.width, 1);
-	context.fillRect(0, 0, 1, canvasElement.height);
-    context.fillRect(canvasElement.width-1, 0, 1, canvasElement.height);
-    context.fillRect(0, canvasElement.height-1, canvasElement.width, 1);
+	context.fillRect(0, 0, canvasElement.width, 2);
+	context.fillRect(0, 0, 2, canvasElement.height);
+    context.fillRect(canvasElement.width-2, 0, 2, canvasElement.height);
+    context.fillRect(0, canvasElement.height-2, canvasElement.width, 2);
     
     for(let y=0;y<noSubgridY;y++){
     	for(let x=0;x<noSubgridX;x++){
@@ -81,12 +87,20 @@ function subgridDivision(subgridWidth,subgridHeight,canvasElement){
               if(imageData.data[i]>0){
                   xArr.push(currentX);
                   yArr.push(subgridWidth-currentY-1);
+                  //console.log(subgridWidth-currentY-1);
               }
           	}
             
             let temp=linearRegression(yArr,xArr);
             temp.startXPos=x*subgridWidth;
             temp.startYPos=y*subgridHeight;
+            
+            if(temp.startXPos==440&&temp.startYPos==220){
+            	console.log(JSON.stringify(xArr));
+                console.log(JSON.stringify(yArr));
+                
+            	console.log(linearRegression(yArr,xArr));
+            }
             //console.log(xArr,yArr);
             results.push(temp);
             //y=999;
@@ -94,7 +108,7 @@ function subgridDivision(subgridWidth,subgridHeight,canvasElement){
           
         }
     }
-console.log(results);
+	console.log(results);
     let rr=results.reduce(function(r,value){
     	if(value.r2>0.4)//filter out low r2 values
         r.push(value);
@@ -123,12 +137,14 @@ console.log(results);
    console.log(groupX);
    
    
+   
+   //show the region on canvas
    for(let i=0;i<groupX.length;i+=1){
    		context.fillStyle ='#'+(Math.random()*0xFFFFFF<<0).toString(16);
    		for(let j=0;j<groupX[i].members.length;j++){
         context.fillRect(groupX[i].members[j].startXPos, groupX[i].members[j].startYPos, subgridWidth, subgridHeight);
         }
-        //console.log(groupX[i]);
+        console.log(groupX[i]);
    }
    
    
@@ -145,7 +161,25 @@ console.log(results);
 
 
 
-function linearRegression(y,x,isCalledBefore){
+function linearRegression(y,x,isCalledBefore){  
+		
+        if(y.length<2)return {"slope":0,"intercept":0,"r2":0,"angle":0};
+        let isVertical=false;
+        if(calculateVerticality(y,x)>calculateVerticality(x,y)){
+            //console.log("vertical line");
+            //console.log(linearRegression(known_x,known_y));
+            //swap y and x arrays
+			let temp_=y;
+            y=x;
+            x=temp_;
+            temp_=null;
+            isVertical=true;
+        }
+        else{
+        	//console.log("hori line");
+        	//console.log(linearRegression(known_y,known_x));
+            //maintain same x and y
+        }
         var lr = {};
         var n = y.length;
         var sum_x = 0;
@@ -163,33 +197,84 @@ function linearRegression(y,x,isCalledBefore){
         } 
 
         lr.slope = (n * sum_xy - sum_x * sum_y) / (n*sum_xx - sum_x * sum_x);
+        
         if(isNaN(lr.slope)){
-        	if(!y.length || isCalledBefore){
+        	//if(!y.length || isCalledBefore){
               lr.r2=0;
               lr.intercept=0;
               lr.slope=0;
-              lr.angle=0;
+              lr.angle=0;console.log('asd');
               return lr;
-            }
+            /*}
+            
               let temp = linearRegression(x,y,true);
               if(!temp.slope){
+              	console.log(temp);
               	temp.angle=90-temp.angle;
                 temp.slope=0;
                 temp.isVerticalLine=true;
               }
-              return temp;
+              return temp;*/
               
         }
         lr.intercept = (sum_y - lr.slope * sum_x)/n;
         lr.r2 = Math.pow((n*sum_xy - sum_x*sum_y)/Math.sqrt((n*sum_xx-sum_x*sum_x)*(n*sum_yy-sum_y*sum_y)),2);
         
-		if(!lr.r2 && lr.intercept)lr.r2=0.75;
+        if(Math.abs(lr.slope)<0.1){
+        	lr.r2=0.75;
+        }
+        /*
+        if(!lr.r2 && lr.intercept){
+        	lr.r2=0.75;//vertical line
+        	lr.angle=90;
+            //lr.isVerticalLine=true;
+            return lr;
+        }
+        else if(isNaN(lr.r2) && lr.intercept){
+        	lr.r2=0.75;//means horizontal line
+        }*/
         
         //let temp_x=5,temp_y=lr.slope*5;
-        lr.angle=Math.atan2(lr.slope,1)* 180 / Math.PI;//Math.atan2(temp_y, temp_x) * 180 / Math.PI;
+        lr.angle=Math.atan2(lr.slope,1)* 180 / Math.PI;
+        if(isNaN(lr.angle))
+        console.error('angle is NaN');
+        //lr.r2=0.75;//only happens when either of the arr values are similar, eg.[2,2,2]
+        if(isVertical)lr.angle=90-lr.angle;
+     
         
+        //lr.angle=Math.atan2(temp_y, temp_x) * 180 / Math.PI;
         
+
         return lr;
+}
+
+//determine verticality of a line
+function calculateVerticality(yArr,xArr){
+    if(!yArr.length || yArr.length===1)console.error('Array length must be more than 1');
+    
+	let yMean=0,xMean=0,xSum=0,ySum=0;
+    //calc mean/average
+	for(let i=0;i<yArr.length;i++){
+    	yMean+=yArr[i];
+        xMean+=xArr[i];
+    }
+    yMean/=yArr.length;
+    xMean/=xArr.length;
+    //calc sum for x and y respectively
+    for(let i=0;i<yArr.length;i++){
+    	let temp=(yArr[i]-yMean);
+        ySum+=temp*temp;
+        
+        temp=(xArr[i]-xMean);
+        xSum+=temp*temp;
+    }
+    //evaluate standard deviation y by x
+    //low->good
+    //high->inaccurate line
+    if(!xSum)xSum=1000;//handling dividen by zero
+    
+    //console.log(Math.sqrt(ySum/xSum));
+    return Math.sqrt(ySum/xSum);
 }
 
 </script>
