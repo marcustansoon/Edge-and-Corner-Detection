@@ -1,5 +1,5 @@
 
-<canvas id="canvas" width="500" height="500"></canvas>
+<canvas id="canvas" width="600" height="600"></canvas>
 <script>
 
 let canvas = document.getElementById('canvas'),
@@ -7,9 +7,9 @@ context = canvas.getContext('2d'),imageData;
 
 let image=new Image();
 image.crossOrigin="Anonymous";
-image.src="https://i.imgur.com/KYDlIpi.png";
+image.src="https://i.imgur.com/RWRKhi7.png";
 image.onload=function(){
-	context.drawImage(image,0,0,500,500);
+	context.drawImage(image,0,0,600,600);
     
     
     
@@ -45,7 +45,7 @@ image.onload=function(){
     
     
    
-    subgridDivision(10,10,canvas);
+    subgridDivision(50,50,canvas);
     context.fillStyle ='#'+(Math.random()*0xFFFFFF<<0).toString(16);
    context.fillRect(440,220,25,25);
 }
